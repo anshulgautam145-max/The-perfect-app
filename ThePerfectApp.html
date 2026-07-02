@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="theme-color" content="#0F0F1A"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="The Perfect App"/>
+<title>The Perfect App</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0F0F1A; color: #F0F0F0; min-height: 100vh; overflow-x: hidden; }
+  
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #1A1A2E; }
+  ::-webkit-scrollbar-thumb { background: #6C5CE7; border-radius: 4px; }
+
+  /* UTILS */
+  .card { background: #1A1A2E; border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+  .btn { border: none; cursor: pointer; font-family: inherit; font-weight: 700; border-radius: 10px; transition: all 0.15s; }
+  .btn:active { transform: scale(0.97); }
+  input, select { font-family: inherit; outline: none; }
+  
+  /* HEADER */
+  .hero { background: linear-gradient(135deg, #1A1A2E 0%, #16213E 60%, #0F3460 100%); border-radius: 16px; padding: 20px; margin-bottom: 12px; position: relative; overflow: hidden; }
+  .hero::after { content: ''; position: absolute; top: -30px; right: -30px; width: 140px; height: 140px; background: rgba(108,92,231,0.12); border-radius: 50%; pointer-events: none; }
+  .hero-eyebrow { font-size: 10px; letter-spacing: 3px; color: #A29BFE; text-transform: uppercase; margin-bottom: 5px; }
+  .hero-title { font-size: 24px; font-weight: 900; background: linear-gradient(90deg, #fff 0%, #A29BFE 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 4px; }
+  .hero-sub { color: #B2BEC3; font-size: 12px; margin-bottom: 16px; }
+  .hero-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+  .hero-badge { background: rgba(255,255,255,0.07); border-radius: 10px; padding: 7px 13px; border-left: 3px solid; }
+  .hero-badge .b-label { font-weight: 800; font-size: 12px; }
+  .hero-badge .b-sub { font-size: 10px; color: #74B9FF; }
+
+  /* STATS ROW */
+  .stats-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .stat-box { flex: 1; background: #1A1A2E; border-radius: 12px; padding: 10px 8px; text-align: center; border: 1px solid; }
+  .stat-label { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+  .stat-value { font-size: 22px; font-weight: 900; color: #fff; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+  .tab-btn { flex: 1; padding: 9px 4px; border-radius: 9px; font-size: 11px; font-weight: 700; border: 1.5px solid #333; background: transparent; color: #666; cursor: pointer; transition: all 0.2s; }
+  .tab-btn.active { }
+
+  /* SCHEDULE */
+  .schedule-card { background: #1A1A2E; border-radius: 12px; padding: 14px; margin-bottom: 12px; border: 1px solid rgba(253,203,110,0.2); }
+  .schedule-title { font-weight: 800; font-size: 13px; color: #FDCB6E; margin-bottom: 10px; }
+  .slot-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; margin-bottom: 5px; }
+  .slot-name { min-width: 85px; font-size: 10px; font-weight: 700; }
+  .slot-time { font-size: 11px; color: #DFE6E9; flex: 1; }
+  .slot-badge { font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 6px; white-space: nowrap; }
+  .schedule-note { margin-top: 8px; font-size: 10px; color: #636E72; font-style: italic; }
+
+  /* TOPIC CARDS */
+  .topic-card { background: #1A1A2E; border-radius: 12px; padding: 14px; margin-bottom: 8px; }
+  .topic-title { font-weight: 800; font-size: 14px; margin-bottom: 4px; }
+  .topic-meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+  .subject-tag { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; }
+  .topic-date { font-size: 10px; color: #636E72; }
+  .due-badge { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: rgba(225,112,85,0.15); color: #E17055; }
+  .rev-row { display: flex; align-items: center; gap: 8px; background: #0F0F1A; border-radius: 7px; padding: 7px 10px; margin-bottom: 4px; }
+  .rev-check { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #E17055; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.2s; }
+  .rev-check.done { background: #E17055; }
+  .rev-label { flex: 1; font-size: 12px; color: #DFE6E9; }
+  .rev-date { font-size: 10px; color: #636E72; }
+  .progress-bar-bg { background: #0F0F1A; border-radius: 6px; height: 5px; margin-bottom: 8px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 6px; transition: width 0.3s; }
+  .rev-btn { padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; }
+  .delete-btn { background: transparent; border: none; color: #444; cursor: pointer; font-size: 18px; padding: 0 4px; }
+
+  /* EMPTY STATE */
+  .empty { background: #1A1A2E; border-radius: 12px; padding: 28px; text-align: center; border: 1px solid #222; }
+  .empty-icon { font-size: 36px; margin-bottom: 10px; }
+  .empty-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .empty-sub { color: #636E72; font-size: 12px; }
+
+  /* START SCREEN */
+  #start-screen { position: fixed; inset: 0; background: #0F0F1A; display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 200; }
+  .start-card { background: #1A1A2E; border-radius: 20px; padding: 28px; max-width: 380px; width: 100%; border: 1px solid rgba(108,92,231,0.4); }
+  .start-icon { font-size: 42px; text-align: center; margin-bottom: 14px; }
+  .start-title { font-size: 22px; font-weight: 900; text-align: center; margin-bottom: 6px; background: linear-gradient(90deg,#fff,#A29BFE); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .start-sub { color: #B2BEC3; font-size: 13px; text-align: center; margin-bottom: 22px; line-height: 1.5; }
+  .start-input { width: 100%; padding: 13px 14px; border-radius: 10px; border: 1.5px solid #6C5CE7; background: #0F0F1A; color: #fff; font-size: 14px; margin-bottom: 14px; }
+  .start-btn { width: 100%; padding: 14px; border-radius: 12px; background: linear-gradient(135deg, #6C5CE7, #A29BFE); color: #fff; font-size: 15px; font-weight: 800; border: none; cursor: pointer; }
+
+  /* ADD FORM MODAL */
+  #add-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: flex-end; justify-content: center; z-index: 150; padding: 16px; }
+  #add-modal.open { display: flex; }
+  .modal-card { background: #1A1A2E; border-radius: 20px; padding: 20px; width: 100%; max-width: 460px; border: 1px solid #6C5CE7; }
+  .modal-title { font-weight: 900; font-size: 16px; color: #A29BFE; margin-bottom: 16px; }
+  .form-input { width: 100%; padding: 11px 13px; border-radius: 9px; border: 1.5px solid #333; background: #0F0F1A; color: #fff; font-size: 13px; margin-bottom: 10px; }
+  .form-input.primary { border-color: #6C5CE7; }
+  .form-row { display: flex; gap: 8px; margin-bottom: 10px; }
+  .form-row .form-input { margin-bottom: 0; }
+  .revision-preview { background: #0F0F1A; border-radius: 9px; padding: 10px 13px; margin-bottom: 10px; }
+  .revision-preview-title { font-size: 10px; color: #A29BFE; font-weight: 700; margin-bottom: 6px; }
+  .preview-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+  .preview-tag { font-size: 10px; color: #55EFC4; background: rgba(0,184,148,0.15); padding: 2px 7px; border-radius: 5px; }
+  .form-btns { display: flex; gap: 8px; }
+  .form-submit { flex: 1; padding: 12px; border-radius: 10px; background: #6C5CE7; color: #fff; font-size: 13px; font-weight: 800; border: none; cursor: pointer; }
+  .form-cancel { padding: 12px 16px; border-radius: 10px; background: transparent; color: #636E72; font-size: 13px; font-weight: 700; border: 1px solid #333; cursor: pointer; }
+
+  /* FAB */
+  #fab { position: fixed; bottom: 24px; right: 20px; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #6C5CE7, #A29BFE); border: none; color: #fff; font-size: 28px; cursor: pointer; box-shadow: 0 4px 24px rgba(108,92,231,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; transition: transform 0.2s; }
+  #fab:active { transform: scale(0.93); }
+
+  /* EXPORT BANNER */
+  .export-bar { background: rgba(253,203,110,0.08); border: 1px solid rgba(253,203,110,0.2); border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .export-text { font-size: 11px; color: #FDCB6E; }
+  .export-btn { font-size: 11px; font-weight: 700; color: #FDCB6E; background: rgba(253,203,110,0.15); border: 1px solid rgba(253,203,110,0.3); border-radius: 7px; padding: 5px 10px; cursor: pointer; }
+
+  /* RAMP BAR */
+  .ramp-section { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 12px; margin-top: 12px; }
+  .ramp-label { font-size: 10px; color: #74B9FF; font-weight: 700; margin-bottom: 8px; letter-spacing: 1px; }
+  .ramp-bars { display: flex; gap: 5px; align-items: flex-end; height: 50px; }
+  .ramp-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .ramp-bar { width: 100%; border-radius: 4px 4px 0 0; }
+  .ramp-bar-label { font-size: 8px; color: #666; text-align: center; line-height: 1.2; }
+  .ramp-bar-val { font-size: 9px; font-weight: 800; }
+
+  /* EDIT DATE */
+  .edit-date-row { display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+  .edit-date-input { padding: 7px 10px; border-radius: 8px; border: 1.5px solid #6C5CE7; background: #0F0F1A; color: #fff; font-size: 12px; }
+  .edit-date-save { padding: 7px 14px; border-radius: 8px; background: #6C5CE7; color: #fff; font-size: 12px; font-weight: 700; border: none; cursor: pointer; }
+  .edit-date-cancel { padding: 7px 12px; border-radius: 8px; background: transparent; color: #636E72; font-size: 12px; border: 1px solid #333; cursor: pointer; }
+  .change-date-link { font-size: 10px; color: #A29BFE; background: rgba(108,92,231,0.15); border: 1px solid rgba(108,92,231,0.3); border-radius: 6px; padding: 3px 8px; cursor: pointer; }
+
+  .spacer { height: 80px; }
+</style>
+</head>
+<body>
+
+<!-- START SCREEN -->
+<div id="start-screen">
+  <div class="start-card">
+    <div class="start-icon">🎯</div>
+    <div class="start-title">The Perfect App</div>
+    <div class="start-sub">Tera personal revision tracker. Jis din se padhai shuru karo — woh date dalo. Plan wahan se automatically chal jaayega.</div>
+    <input type="date" class="start-input" id="start-date-input" />
+    <button class="start-btn" onclick="setStartDate()">Plan Shuru Karo 🚀</button>
+  </div>
+</div>
+
+<!-- ADD MODAL -->
+<div id="add-modal">
+  <div class="modal-card">
+    <div class="modal-title">➕ Naya Topic Add Karo</div>
+    <input type="text" class="form-input primary" id="f-topic" placeholder="Topic naam *" />
+    <input type="text" class="form-input" id="f-subject" placeholder="Subject (e.g. Raj. History)" />
+    <div class="form-row">
+      <select class="form-input" id="f-slot" style="flex:1"></select>
+      <input type="date" class="form-input" id="f-date" style="flex:1" oninput="updatePreview()" />
+    </div>
+    <input type="text" class="form-input" id="f-notes" placeholder="Notes (optional)" />
+    <div class="revision-preview" id="rev-preview">
+      <div class="revision-preview-title">📅 Revision dates (auto):</div>
+      <div class="preview-tags" id="preview-tags"></div>
+    </div>
+    <div class="form-btns">
+      <button class="form-submit" onclick="addTopic()">Add Karo ✓</button>
+      <button class="form-cancel" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- FAB -->
+<button id="fab" onclick="openModal()">+</button>
+
+<!-- MAIN CONTENT -->
+<div style="padding:14px; max-width:600px; margin:0 auto;" id="main-content">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">RPSC — Revision Tracker</div>
+    <div class="hero-title">The Perfect App 🔥</div>
+    <div class="hero-sub">Spaced Repetition · Auto Schedule · Exam Ready</div>
+    <div class="hero-badges" id="hero-badges"></div>
+    <div class="ramp-section">
+      <div class="ramp-label">📈 HOURS RAMP-UP</div>
+      <div class="ramp-bars">
+        <div class="ramp-bar-wrap">
+          <div class="ramp-bar-val" style="color:#74B9FF">6h</div>
+          <div class="ramp-bar" style="background:#74B9FF;height:26px"></div>
+          <div class="ramp-bar-label">W1</div>
+        </div>
+        <div class="ramp-bar-wrap">
+          <div class="ramp-bar-val" style="color:#A29BFE">7h</div>
+          <div class="ramp-bar" style="background:#A29BFE;height:32px"></div>
+          <div class="ramp-bar-label">W2</div>
+        </div>
+        <div class="ramp-bar-wrap">
+          <div class="ramp-bar-val" style="color:#6C5CE7">8h</div>
+          <div class="ramp-bar" style="background:#6C5CE7;height:38px"></div>
+          <div class="ramp-bar-label">W3</div>
+        </div>
+        <div class="ramp-bar-wrap">
+          <div class="ramp-bar-val" style="color:#00B894">9h</div>
+          <div class="ramp-bar" style="background:#00B894;height:44px"></div>
+          <div class="ramp-bar-label">W4+</div>
+        </div>
+      </div>
+    </div>
+    <!-- edit date -->
+    <div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;" id="date-info-row">
+      <span style="font-size:11px;color:#636E72">📅 Start: <span id="start-date-display" style="color:#74B9FF;font-weight:700">—</span></span>
+      <span class="change-date-link" onclick="showEditDate()">✏️ Change</span>
+    </div>
+    <div class="edit-date-row" id="edit-date-row" style="display:none">
+      <input type="date" class="edit-date-input" id="edit-date-input" />
+      <button class="edit-date-save" onclick="saveEditDate()">Save</button>
+      <button class="edit-date-cancel" onclick="hideEditDate()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row" id="stats-row"></div>
+
+  <!-- SCHEDULE -->
+  <div class="schedule-card" id="schedule-card"></div>
+
+  <!-- EXPORT BAR -->
+  <div class="export-bar">
+    <span class="export-text">💾 Data backup — export karo safe rehne ke liye</span>
+    <button class="export-btn" onclick="exportData()">Export JSON</button>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn" id="tab-today" onclick="setTab('today')">Due Today</button>
+    <button class="tab-btn" id="tab-upcoming" onclick="setTab('upcoming')">Upcoming</button>
+    <button class="tab-btn" id="tab-all" onclick="setTab('all')">All Topics</button>
+  </div>
+
+  <!-- CONTENT AREA -->
+  <div id="content-area"></div>
+
+  <div class="spacer"></div>
+</div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const REVISION_INTERVALS = [1, 3, 7, 30];
+const REVISION_LABELS = ["Kal (Day 1)", "Day 3", "Week 1", "Month 1"];
+
+const SLOT_SCHEDULE = {
+  6: [
+    { slot: "Slot 1", time: "7:00–9:00 AM (2 hrs)", type: "study" },
+    { slot: "Slot 2", time: "9:30–11:00 AM (1.5 hrs)", type: "revision" },
+    { slot: "Slot 3", time: "11:30–1:00 PM (1.5 hrs)", type: "study" },
+    { slot: "Slot 4", time: "4:00–4:30 PM (0.5 hr)", type: "current" },
+    { slot: "Slot 6 (Raat)", time: "9:30–10:00 PM (0.5 hr)", type: "flashcard" },
+  ],
+  7: [
+    { slot: "Slot 1", time: "7:00–9:00 AM (2 hrs)", type: "study" },
+    { slot: "Slot 2", time: "9:30–11:00 AM (1.5 hrs)", type: "revision" },
+    { slot: "Slot 3", time: "11:30–1:00 PM (1.5 hrs)", type: "study" },
+    { slot: "Slot 4", time: "4:00–4:30 PM (0.5 hr)", type: "current" },
+    { slot: "Slot 5", time: "6:00–7:00 PM (1 hr)", type: "mock" },
+    { slot: "Slot 6 (Raat)", time: "9:30–10:00 PM (0.5 hr)", type: "flashcard" },
+  ],
+  8: [
+    { slot: "Slot 1", time: "6:30–8:30 AM (2 hrs)", type: "study" },
+    { slot: "Slot 2", time: "9:00–10:30 AM (1.5 hrs)", type: "revision" },
+    { slot: "Slot 3", time: "11:00–12:30 PM (1.5 hrs)", type: "study" },
+    { slot: "Slot 4", time: "2:30–3:30 PM (1 hr)", type: "current" },
+    { slot: "Slot 5", time: "5:00–6:00 PM (1 hr)", type: "mock" },
+    { slot: "Slot 6 (Raat)", time: "8:30–9:30 PM (1 hr)", type: "flashcard" },
+  ],
+  9: [
+    { slot: "Slot 1", time: "5:30–7:30 AM (2 hrs)", type: "study" },
+    { slot: "Slot 2", time: "8:00–10:00 AM (2 hrs)", type: "revision" },
+    { slot: "Slot 3", time: "10:30–12:30 PM (2 hrs)", type: "study" },
+    { slot: "Slot 4", time: "2:30–3:30 PM (1 hr)", type: "current" },
+    { slot: "Slot 5", time: "5:00–6:00 PM (1 hr)", type: "mock" },
+    { slot: "Slot 6 (Raat)", time: "8:00–9:00 PM (1 hr)", type: "flashcard" },
+  ],
+};
+
+const SLOT_STYLES = {
+  study:    { bg: "rgba(108,92,231,0.15)", text: "#A29BFE", label: "New Topic" },
+  revision: { bg: "rgba(225,112,85,0.15)", text: "#E17055", label: "Revision" },
+  current:  { bg: "rgba(0,184,148,0.15)",  text: "#55EFC4", label: "Current Affairs" },
+  mock:     { bg: "rgba(253,203,110,0.15)",text: "#FDCB6E", label: "Mock/PYQ" },
+  flashcard:{ bg: "rgba(253,121,168,0.15)",text: "#FD79A8", label: "Flashcard" },
+};
+
+const SUBJECT_COLORS = ["#6C5CE7","#E17055","#00B894","#FDCB6E","#FD79A8","#74B9FF","#A29BFE","#55EFC4","#E84393","#F39C12"];
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let state = {
+  startDate: "",
+  topics: [],
+  activeTab: "today",
+};
+
+// ─── STORAGE ─────────────────────────────────────────────────────────────────
+function save() {
+  try { localStorage.setItem("tpa_data", JSON.stringify(state)); } catch(e) {}
+}
+
+function load() {
+  try {
+    const d = localStorage.getItem("tpa_data");
+    if (d) { state = { ...state, ...JSON.parse(d) }; }
+  } catch(e) {}
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function todayStr() { return new Date().toISOString().split("T")[0]; }
+
+function addDays(dateStr, days) {
+  const d = new Date(dateStr);
+  d.setDate(d.getDate() + days);
+  return d.toISOString().split("T")[0];
+}
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr + "T00:00:00");
+  return d.toLocaleDateString("en-IN", { day: "numeric", month: "short", weekday: "short" });
+}
+
+function getWeekNum(startDate, today) {
+  const s = new Date(startDate), t = new Date(today);
+  const diff = Math.floor((t - s) / (1000*60*60*24));
+  return Math.max(1, Math.floor(diff / 7) + 1);
+}
+
+function getHours(weekNum) {
+  if (weekNum <= 1) return 6;
+  if (weekNum <= 2) return 7;
+  if (weekNum <= 3) return 8;
+  return 9;
+}
+
+function subjectColor(sub) {
+  if (!sub) return SUBJECT_COLORS[0];
+  let h = 0;
+  for (let c of sub) h += c.charCodeAt(0);
+  return SUBJECT_COLORS[h % SUBJECT_COLORS.length];
+}
+
+// ─── START DATE ──────────────────────────────────────────────────────────────
+function setStartDate() {
+  const val = document.getElementById("start-date-input").value;
+  if (!val) return;
+  state.startDate = val;
+  save();
+  document.getElementById("start-screen").style.display = "none";
+  render();
+}
+
+function showEditDate() {
+  document.getElementById("edit-date-row").style.display = "flex";
+  document.getElementById("edit-date-input").value = state.startDate;
+}
+
+function hideEditDate() {
+  document.getElementById("edit-date-row").style.display = "none";
+}
+
+function saveEditDate() {
+  const val = document.getElementById("edit-date-input").value;
+  if (!val) return;
+  state.startDate = val;
+  save();
+  hideEditDate();
+  render();
+}
+
+// ─── MODAL ───────────────────────────────────────────────────────────────────
+function openModal() {
+  const today = todayStr();
+  document.getElementById("f-topic").value = "";
+  document.getElementById("f-subject").value = "";
+  document.getElementById("f-notes").value = "";
+  document.getElementById("f-date").value = today;
+  updateSlotSelect();
+  updatePreview();
+  document.getElementById("add-modal").classList.add("open");
+}
+
+function closeModal() {
+  document.getElementById("add-modal").classList.remove("open");
+}
+
+function updateSlotSelect() {
+  const weekNum = state.startDate ? getWeekNum(state.startDate, todayStr()) : 1;
+  const hrs = getHours(weekNum);
+  const slots = SLOT_SCHEDULE[hrs] || SLOT_SCHEDULE[6];
+  const sel = document.getElementById("f-slot");
+  sel.innerHTML = slots.map(s => `<option value="${s.slot}">${s.slot} (${s.time})</option>`).join("");
+}
+
+function updatePreview() {
+  const date = document.getElementById("f-date").value || todayStr();
+  const tags = REVISION_INTERVALS.map((d, i) =>
+    `<span class="preview-tag">${REVISION_LABELS[i]}: ${formatDate(addDays(date, d))}</span>`
+  ).join("");
+  document.getElementById("preview-tags").innerHTML = tags;
+}
+
+// ─── TOPIC ACTIONS ───────────────────────────────────────────────────────────
+function addTopic() {
+  const topic = document.getElementById("f-topic").value.trim();
+  if (!topic) { document.getElementById("f-topic").focus(); return; }
+  const date = document.getElementById("f-date").value || todayStr();
+  const newTopic = {
+    id: Date.now(),
+    topic,
+    subject: document.getElementById("f-subject").value.trim(),
+    slot: document.getElementById("f-slot").value,
+    studiedOn: date,
+    notes: document.getElementById("f-notes").value.trim(),
+    revisions: REVISION_INTERVALS.map((d, i) => ({
+      date: addDays(date, d),
+      label: REVISION_LABELS[i],
+      done: false,
+    })),
+  };
+  state.topics.push(newTopic);
+  save();
+  closeModal();
+  render();
+}
+
+function deleteTopic(id) {
+  state.topics = state.topics.filter(t => t.id !== id);
+  save();
+  render();
+}
+
+function toggleRevision(topicId, revIdx) {
+  state.topics = state.topics.map(t => {
+    if (t.id !== topicId) return t;
+    const revisions = t.revisions.map((r, i) => i === revIdx ? { ...r, done: !r.done } : r);
+    return { ...t, revisions };
+  });
+  save();
+  render();
+}
+
+function setTab(tab) {
+  state.activeTab = tab;
+  render();
+}
+
+// ─── EXPORT ──────────────────────────────────────────────────────────────────
+function exportData() {
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "ThePerfectApp_backup.json";
+  a.click();
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+function render() {
+  const today = todayStr();
+  const weekNum = state.startDate ? getWeekNum(state.startDate, today) : 1;
+  const hrs = state.startDate ? getHours(weekNum) : 6;
+  const slots = SLOT_SCHEDULE[hrs] || SLOT_SCHEDULE[6];
+  const next7 = addDays(today, 7);
+
+  const todayDue = state.topics.filter(t => t.revisions.some(r => !r.done && r.date <= today));
+  const upcoming = state.topics.filter(t => t.revisions.some(r => !r.done && r.date > today && r.date <= next7));
+
+  // HERO BADGES
+  document.getElementById("hero-badges").innerHTML = [
+    { label: `Week ${weekNum}`, sub: "Current week", color: "#6C5CE7" },
+    { label: `${hrs} hrs`, sub: "Daily target", color: "#FDCB6E" },
+    { label: `${state.topics.length}`, sub: "Topics added", color: "#00B894" },
+  ].map(b => `
+    <div class="hero-badge" style="border-color:${b.color}">
+      <div class="b-label" style="color:${b.color}">${b.label}</div>
+      <div class="b-sub">${b.sub}</div>
+    </div>
+  `).join("");
+
+  // START DATE DISPLAY
+  document.getElementById("start-date-display").textContent = state.startDate ? formatDate(state.startDate) : "—";
+
+  // STATS
+  document.getElementById("stats-row").innerHTML = [
+    { label: "DUE TODAY", value: todayDue.length, color: "#E17055", border: "rgba(225,112,85,0.3)" },
+    { label: "UPCOMING", value: upcoming.length, color: "#FDCB6E", border: "rgba(253,203,110,0.3)" },
+    { label: "TOTAL", value: state.topics.length, color: "#A29BFE", border: "rgba(108,92,231,0.3)" },
+  ].map(s => `
+    <div class="stat-box" style="border-color:${s.border}">
+      <div class="stat-label" style="color:${s.color}">${s.label}</div>
+      <div class="stat-value">${s.value}</div>
+    </div>
+  `).join("");
+
+  // SCHEDULE
+  document.getElementById("schedule-card").innerHTML = `
+    <div class="schedule-title">📅 Aaj Ka Schedule — ${hrs} hrs/day (Week ${weekNum})</div>
+    ${slots.map(s => {
+      const st = SLOT_STYLES[s.type];
+      return `
+        <div class="slot-row" style="background:${st.bg}">
+          <span class="slot-name" style="color:${st.text}">${s.slot}</span>
+          <span class="slot-time">${s.time}</span>
+          <span class="slot-badge" style="color:${st.text};background:${st.bg};border:1px solid ${st.text}40">${st.label}</span>
+        </div>
+      `;
+    }).join("")}
+    <div class="schedule-note">💡 Slot 2 = due revisions karo | Slot 5 = Week 2 se | Slot 6 = aaj padha quick dekho</div>
+  `;
+
+  // TABS
+  ["today","upcoming","all"].forEach(tab => {
+    const el = document.getElementById(`tab-${tab}`);
+    const labels = {
+      today: `Due Today (${todayDue.length})`,
+      upcoming: `Upcoming (${upcoming.length})`,
+      all: `All Topics (${state.topics.length})`,
+    };
+    const colors = { today: "#E17055", upcoming: "#FDCB6E", all: "#6C5CE7" };
+    el.textContent = labels[tab];
+    if (state.activeTab === tab) {
+      el.style.borderColor = colors[tab];
+      el.style.background = colors[tab] + "20";
+      el.style.color = colors[tab];
+    } else {
+      el.style.borderColor = "#333";
+      el.style.background = "transparent";
+      el.style.color = "#666";
+    }
+  });
+
+  // CONTENT
+  const ca = document.getElementById("content-area");
+
+  if (state.activeTab === "today") {
+    if (todayDue.length === 0) {
+      ca.innerHTML = `<div class="empty"><div class="empty-icon">✅</div><div class="empty-title" style="color:#55EFC4">Aaj koi revision due nahi!</div><div class="empty-sub">Naya topic add karo ya aaram karo 😄</div></div>`;
+    } else {
+      ca.innerHTML = todayDue.map(t => {
+        const dueRevs = t.revisions.map((r, i) => ({ ...r, idx: i })).filter(r => !r.done && r.date <= today);
+        const col = subjectColor(t.subject);
+        return `
+          <div class="topic-card" style="border:1px solid rgba(225,112,85,0.2)">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+              <div>
+                <div class="topic-title">${t.topic}</div>
+                <div class="topic-meta">
+                  ${t.subject ? `<span class="subject-tag" style="color:${col};background:${col}20">${t.subject}</span>` : ""}
+                  <span class="topic-date">Padha: ${formatDate(t.studiedOn)}</span>
+                </div>
+              </div>
+              <span class="due-badge">${dueRevs.length} due</span>
+            </div>
+            ${dueRevs.map(r => `
+              <div class="rev-row">
+                <button class="rev-check ${r.done ? 'done' : ''}" onclick="toggleRevision(${t.id}, ${r.idx})">
+                  ${r.done ? '<span style="color:#fff;font-size:11px">✓</span>' : ""}
+                </button>
+                <span class="rev-label">${r.label} revision</span>
+                <span class="rev-date">${formatDate(r.date)}</span>
+              </div>
+            `).join("")}
+          </div>
+        `;
+      }).join("");
+    }
+  }
+
+  else if (state.activeTab === "upcoming") {
+    if (upcoming.length === 0) {
+      ca.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><div class="empty-title" style="color:#FDCB6E">Agle 7 din mein koi revision nahi</div><div class="empty-sub">Sab clear hai! 🎯</div></div>`;
+    } else {
+      ca.innerHTML = upcoming.map(t => {
+        const upRevs = t.revisions.map((r, i) => ({ ...r, idx: i })).filter(r => !r.done && r.date > today && r.date <= next7);
+        const col = subjectColor(t.subject);
+        return `
+          <div class="topic-card" style="border:1px solid rgba(253,203,110,0.2)">
+            <div class="topic-title">${t.topic}</div>
+            <div class="topic-meta">
+              ${t.subject ? `<span class="subject-tag" style="color:${col};background:${col}20">${t.subject}</span>` : ""}
+              <span class="topic-date">${formatDate(t.studiedOn)}</span>
+            </div>
+            ${upRevs.map(r => `
+              <div style="display:flex;justify-content:space-between;background:#0F0F1A;border-radius:7px;padding:6px 10px;margin-bottom:4px">
+                <span style="font-size:12px;color:#DFE6E9">${r.label}</span>
+                <span style="font-size:11px;color:#FDCB6E;font-weight:700">${formatDate(r.date)}</span>
+              </div>
+            `).join("")}
+          </div>
+        `;
+      }).join("");
+    }
+  }
+
+  else if (state.activeTab === "all") {
+    if (state.topics.length === 0) {
+      ca.innerHTML = `<div class="empty"><div class="empty-icon">📚</div><div class="empty-title" style="color:#A29BFE">Koi topic add nahi kiya abhi</div><div class="empty-sub">Neeche + button se add karo</div></div>`;
+    } else {
+      ca.innerHTML = state.topics.map(t => {
+        const doneCount = t.revisions.filter(r => r.done).length;
+        const progress = Math.round((doneCount / t.revisions.length) * 100);
+        const col = subjectColor(t.subject);
+        return `
+          <div class="topic-card" style="border:1px solid rgba(108,92,231,0.2)">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+              <div>
+                <div class="topic-title">${t.topic}</div>
+                <div class="topic-meta">
+                  ${t.subject ? `<span class="subject-tag" style="color:${col};background:${col}20">${t.subject}</span>` : ""}
+                  <span class="topic-date">${t.slot} · ${formatDate(t.studiedOn)}</span>
+                </div>
+              </div>
+              <button class="delete-btn" onclick="deleteTopic(${t.id})">🗑</button>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width:${progress}%;background:${progress===100?'#00B894':'#6C5CE7'}"></div>
+            </div>
+            <div style="display:flex;gap:4px;flex-wrap:wrap">
+              ${t.revisions.map((r, ri) => `
+                <button class="rev-btn" onclick="toggleRevision(${t.id},${ri})"
+                  style="background:${r.done?'rgba(0,184,148,0.2)':'#1e1e2e'};color:${r.done?'#55EFC4':'#636E72'}">
+                  ${r.done ? "✓ " : ""}${r.label}
+                </button>
+              `).join("")}
+            </div>
+            ${t.notes ? `<div style="margin-top:8px;font-size:11px;color:#636E72;font-style:italic">📝 ${t.notes}</div>` : ""}
+          </div>
+        `;
+      }).join("");
+    }
+  }
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+load();
+if (state.startDate) {
+  document.getElementById("start-screen").style.display = "none";
+}
+// Set default date in modal
+document.getElementById("f-date").value = todayStr();
+render();
+</script>
+</body>
+</html>
