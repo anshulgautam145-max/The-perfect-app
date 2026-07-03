@@ -644,5 +644,11 @@ if (state.startDate) {
 document.getElementById("f-date").value = todayStr();
 render();
 </script>
+ <script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
+}
+</script>
+
 </body>
 </html>
