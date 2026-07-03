@@ -4,5 +4,12 @@
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0F0F1A",
-  "theme_color": "#0F0F1A"
+  "theme_color": "#0F0F1A",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcilHZpZXdCb3g9IjAgMCAxMDAgMTAwlj48cmVjdCB3aWR0aD0iMTAwliBoZWlnaHQ9IjEwMCIgZmlsbD0ilzZDNUNFNylvPjwvc3ZnPg==",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
 }
